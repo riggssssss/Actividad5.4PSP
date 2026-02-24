@@ -1,29 +1,55 @@
 package agenda.controladores;
 
+import agenda.entidades.Usuario;
 import agenda.excepciones.BadRequestException;
+import agenda.repositorios.UsuarioRepository;
 import agenda.seguridad.Constans;
 import agenda.seguridad.JWTAuthenticationConfig;
+import agenda.seguridad.PasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class LoginController {
 
     @Autowired
-    JWTAuthenticationConfig jwtAuthtenticationConfig;
+    private JWTAuthenticationConfig jwtAuthenticationConfig;
 
-    @PostMapping("login")
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @PostMapping("/login")
     public String login(
             @RequestParam("user") String username,
-            @RequestParam("encryptedPass") String encryptedPass) throws BadRequestException {
+            @RequestParam("encryptedPass") String encryptedPass)
+            throws BadRequestException {
 
-        if (!(username.equals(Constans.USER) && encryptedPass.equals(Constans.PASS))) {
+        List<Usuario> usuarios = usuarioRepository.getUsuarios();
+
+        Usuario usuarioEncontrado = null;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getUsername().equals(username) &&
+                    PasswordEncryptor.decrypt(usuario.getEncryptedPass()).equals(encryptedPass)) {
+
+                usuarioEncontrado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioEncontrado == null) {
             throw new BadRequestException();
         }
 
-        String token = jwtAuthtenticationConfig.getJWTToken(username);
+        String token = jwtAuthenticationConfig.getJWTToken(
+                usuarioEncontrado.getUsername(),
+                usuarioEncontrado.getRol()
+        );
+
         return token;
     }
 }
