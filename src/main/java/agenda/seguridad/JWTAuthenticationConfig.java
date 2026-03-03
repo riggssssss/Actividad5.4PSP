@@ -15,9 +15,11 @@ import static agenda.seguridad.Constans.SUPER_SECRET_KEY;
 import static agenda.seguridad.Constans.TOKEN_EXPIRATION_TIME;
 import static agenda.seguridad.Constans.getSigningKey;
 
+// Clase para crear los tokens JWT
 @Configuration
 public class JWTAuthenticationConfig {
 
+    // Genera un token nuevo con el usuario y su rol
     public String getJWTToken(String username, Rol rol) {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_" + rol.toString());

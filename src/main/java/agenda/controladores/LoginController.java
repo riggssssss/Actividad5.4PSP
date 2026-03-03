@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// Controlador para el login
 @RestController
 public class LoginController {
 
@@ -22,6 +23,7 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // Recibe usuario y contraseña y devuelve un token si son correctos
     @PostMapping("/login")
     public String login(
             @RequestParam("user") String username,
@@ -32,6 +34,7 @@ public class LoginController {
 
         Usuario usuarioEncontrado = null;
 
+        // Buscamos el usuario y comprobamos la contraseña
         for (Usuario usuario : usuarios) {
             if (usuario.getUsername().equals(username) &&
                     PasswordEncryptor.decrypt(usuario.getEncryptedPass()).equals(encryptedPass)) {
@@ -41,10 +44,12 @@ public class LoginController {
             }
         }
 
+        // Si no lo encontramos lanzamos error
         if (usuarioEncontrado == null) {
             throw new BadRequestException();
         }
 
+        // Si todo va bien generamos el token
         String token = jwtAuthenticationConfig.getJWTToken(
                 usuarioEncontrado.getUsername(),
                 usuarioEncontrado.getRol()

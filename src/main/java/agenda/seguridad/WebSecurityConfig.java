@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import agenda.entidades.Rol;
 import agenda.seguridad.Constans;
 
+// Esto configura la seguridad de la aplicacion
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
@@ -18,6 +19,7 @@ public class WebSecurityConfig {
     @Autowired
     private JWTAuthorizationFilter jwtAuthorizationFilter;
 
+    // Aqui se definen las reglas de acceso a las URLs
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

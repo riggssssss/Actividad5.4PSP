@@ -7,11 +7,13 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+// Clase para encriptar y desencriptar contraseñas
 public class PasswordEncryptor {
 
     private static final String SECRET_KEY = "1234567890123456"; // 16 chars for AES-128
     private static final String INIT_VECTOR = "1234567890123456"; // 16 chars for IV
 
+    // Convierte texto normal en texto encriptado
     public static String encrypt(String plaintext) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -33,6 +35,7 @@ public class PasswordEncryptor {
         }
     }
 
+    // Convierte texto encriptado de vuelta a texto normal
     public static String decrypt(String encryptedText) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
